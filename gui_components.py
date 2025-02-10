@@ -6,6 +6,81 @@ import csv
 from datetime import datetime
 from file_scanner import FileScanner
 from file_operations import move_to_backup, delete_files
+from version import VERSION, RELEASE_DATE, APP_NAME
+
+class AboutDialog(tk.Toplevel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.title("About")
+        self.geometry("400x300")
+        self.resizable(False, False)
+
+        # Center the dialog
+        self.transient(parent)
+        self.grab_set()
+
+        # Create main frame with padding
+        main_frame = ttk.Frame(self, padding="20")
+        main_frame.pack(fill="both", expand=True)
+
+        # App name with custom font
+        app_name_label = ttk.Label(
+            main_frame,
+            text=APP_NAME,
+            font=("Helvetica", 16, "bold")
+        )
+        app_name_label.pack(pady=(0, 5))
+
+        # Version and release date
+        version_frame = ttk.Frame(main_frame)
+        version_frame.pack(pady=(0, 10))
+        ttk.Label(version_frame, text=f"Version {VERSION}").pack()
+        ttk.Label(version_frame, text=f"Released: {RELEASE_DATE}").pack()
+
+        # Description
+        description = (
+            "A modern, cross-platform desktop application for detecting\n"
+            "and managing duplicate files with an intuitive user interface."
+        )
+        desc_label = ttk.Label(
+            main_frame,
+            text=description,
+            justify="center",
+            wraplength=350
+        )
+        desc_label.pack(pady=(0, 15))
+
+        # Features
+        features = (
+            "• Advanced file scanning with SHA-256 hashing\n"
+            "• Real-time progress tracking\n"
+            "• Multiple file management options\n"
+            "• Cross-platform compatibility"
+        )
+        features_label = ttk.Label(
+            main_frame,
+            text=features,
+            justify="left",
+            wraplength=350
+        )
+        features_label.pack(pady=(0, 15))
+
+        # License info
+        license_text = "Licensed under MIT License"
+        license_label = ttk.Label(main_frame, text=license_text)
+        license_label.pack(pady=(0, 10))
+
+        # Close button
+        close_button = ttk.Button(
+            main_frame,
+            text="Close",
+            command=self.destroy,
+            width=15
+        )
+        close_button.pack(pady=(0, 10))
+
+        # Bind escape key to close
+        self.bind("<Escape>", lambda e: self.destroy())
 
 class MainApplication(ttk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -14,6 +89,7 @@ class MainApplication(ttk.Frame):
         self.scanner = FileScanner()
         self.duplicate_groups = []
         self.create_widgets()
+        self.create_menu()
 
     def create_widgets(self):
         # Top frame for controls
@@ -73,6 +149,23 @@ class MainApplication(ttk.Frame):
         
         self.export_button = ttk.Button(self.actions_frame, text="Export Report", command=self.export_report)
         self.export_button.pack(side="left", padx=5)
+
+    def create_menu(self):
+        menubar = tk.Menu(self.parent)
+        self.parent.config(menu=menubar)
+
+        # File menu
+        file_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="File", menu=file_menu)
+        file_menu.add_command(label="Exit", command=self.parent.quit)
+
+        # Help menu
+        help_menu = tk.Menu(menubar, tearoff=0)
+        menubar.add_cascade(label="Help", menu=help_menu)
+        help_menu.add_command(label="About", command=self.show_about)
+
+    def show_about(self):
+        AboutDialog(self.parent)
 
     def browse_folder(self):
         folder_selected = filedialog.askdirectory()

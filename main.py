@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 from gui_components import MainApplication
+from version import VERSION, APP_NAME
 
 def main():
     root = tk.Tk()
-    root.title("Duplicate File Detector")
+    root.title(f"{APP_NAME} v{VERSION}")
 
     # Set minimum window size
     root.minsize(800, 600)
