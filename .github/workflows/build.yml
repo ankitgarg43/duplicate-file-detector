@@ -5,6 +5,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -17,33 +19,34 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-        
-    - name: Install dependencies
+
+    - name: Install system dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-tk
+
+    - name: Install system dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install python-tk
+
+    - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller
-        pip install -r requirements.txt
-        
+        pip install pyinstaller pillow
+
     - name: Generate icons
-      run: |
-        python -c "
-        from PIL import Image
-        img = Image.new('RGBA', (256, 256), color='white')
-        img.save('generated-icon.png')
-        if '${{ matrix.os }}' == 'windows-latest':
-            img.save('generated-icon.ico')
-        elif '${{ matrix.os }}' == 'macos-latest':
-            img.save('generated-icon.icns')
-        "
-      
+      run: python generate_icons.py
+
     - name: Build executable
       run: python build_exe.py
-      
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
@@ -52,3 +55,18 @@ jobs:
           dist/DuplicateFileDetector*
           README.md
           LICENSE
+          RELEASE.md
+          screenshots/*
+
+    - name: Upload to Release
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/DuplicateFileDetector*
+          README.md
+          LICENSE
+          RELEASE.md
+          screenshots/*
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

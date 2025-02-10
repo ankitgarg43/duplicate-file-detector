@@ -1,9 +1,9 @@
-# Duplicate File Detector v1.0.0 Release Notes
+# Duplicate File Detector v1.0.1 Release Notes
 
 Release Date: February 2025
 
 ## Overview
-The initial release of Duplicate File Detector provides a modern, cross-platform solution for identifying and managing duplicate files on your system. With an intuitive graphical interface and powerful file comparison algorithms, it helps users reclaim valuable disk space and organize their files effectively.
+The Duplicate File Detector provides a modern, cross-platform solution for identifying and managing duplicate files on your system. With an intuitive graphical interface and powerful file comparison algorithms, it helps users reclaim valuable disk space and organize their files effectively.
 
 ## Features
 - **Advanced File Scanning**: Fast and accurate duplicate detection using SHA-256 hashing
@@ -42,6 +42,12 @@ The initial release of Duplicate File Detector provides a modern, cross-platform
 - Batch processing capabilities
 
 ## Changelog
+### v1.0.1
+- Improved build process for all platforms
+- Enhanced icon generation
+- Fixed system dependencies for cross-platform compatibility
+- Updated documentation
+
 ### v1.0.0
 - Initial release with core functionality
 - Cross-platform GUI implementation
